@@ -6,7 +6,8 @@ import base64
 from pymongo import MongoClient
 
 app = Flask(__name__) #creating the Flask class object   
-cluster=MongoClient("SHHHHHHHHHHHHHHHHHHH")
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+cluster=MongoClient("SHH")
 
 @app.route('/')  
 def contact():  
@@ -72,13 +73,13 @@ def form_data2():
             db.insert_one(entry)
 
         elif city=="hyderabad":
-            db=cluster["aqua-democracy"]["hyderabad-submissions"]
+            dbx=cluster["aqua-democracy"]["hyderabad-submissions"]
             entry={"first_name":firstname,"last_name":lastname,"email":email,"message":message,"moss":moss,"body_impacted":body_impacted,"water_impurity":impurity, "latitude":latitude,"longitude":longitude,"image":image}
-            db.insert_one(entry)
+            dbx.insert_one(entry)
         elif city=="mumbai":
-            db=cluster["aqua-democracy"]["mumbai-submissions"]
+            dby=cluster["aqua-democracy"]["mumbai-submissions"]
             entry={"first_name":firstname,"last_name":lastname,"email":email,"message":message,"moss":moss,"body_impacted":body_impacted,"water_impurity":impurity, "latitude":latitude,"longitude":longitude,"image":image}
-            db.insert_one(entry)
+            dby.insert_one(entry)
 
 
     except Exception as err: # if error
@@ -132,9 +133,6 @@ def mapper():
         folium.Marker([row['latitude'], row['longitude']], popup=popup).add_to(folium_map_mumbai)
     folium_map_mumbai.save('templates/map-mumbai.html')
 
-sched = BackgroundScheduler(daemon=True)
-sched.add_job(mapper,'interval',minutes=0.2)
-sched.start()
 
 
 
@@ -160,5 +158,10 @@ def map2():
 @app.route('/map-mumbai')
 def map3():
     return render_template('map-mumbai.html')
+
+sched = BackgroundScheduler(daemon=True)
+sched.add_job(mapper,'interval',minutes=0.2)
+sched.start()
+
 if __name__ == '__main__':  
-   app.run(debug = True)  
+   app.run()  

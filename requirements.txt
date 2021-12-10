@@ -1,0 +1,6 @@
+flask
+folium
+apscheduler
+gunicorn
+dnspython
+pymongo
